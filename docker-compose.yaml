@@ -8,17 +8,15 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mgdata:/data/db
+      - filebroker_data:/data/db
   backend:
     build: .
     ports:
       - "8080:8000"
     depends_on:
       - mongodb
-    environment:
-      DATABASE_URL: mongodb://root:example@mongodb:27017
     volumes:
       - .:/app
 
 volumes:
-  mgdata:
+  filebroker_data:

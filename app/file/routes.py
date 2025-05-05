@@ -41,7 +41,7 @@ async def upload_file(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/dl/{file_id}")
+@router.get("/download/{file_id}")
 async def download_file(file_id: str) -> Response:
     try:
         file = await File.get(file_id)
