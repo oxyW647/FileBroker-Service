@@ -1,6 +1,7 @@
 from fastapi import APIRouter, UploadFile, HTTPException, Response, Form
-import httpx
 from urllib.parse import quote
+from app.file.schemas import CreateFile
+import httpx
 from app.file.models import File
 from app.file.utils import S3Client
 from app.config import (
@@ -26,14 +27,15 @@ async def upload_file(
             bucket_name=aws_bucket_name,
         )
         s3_object = await client.upload_file(file.file, file.filename)
-        doc = File(
+        doc_template = CreateFile(
             name=file.filename,
             user=user,
             type=file.content_type,
             size=file.size,
-            metadata=file.headers,
             s3_object=s3_object,
+            metadata=file.headers,
         )
+        doc = File(**doc_template.dict())
         await doc.insert()
         return {"response": "File uploaded successfully", "id": str(doc.id)}
 
